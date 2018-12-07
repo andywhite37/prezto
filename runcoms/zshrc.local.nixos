@@ -1,0 +1,348 @@
+################################################################################
+# awhite's .zshrc for NixOS
+################################################################################
+
+################################################################################
+# zsh/prezto config
+################################################################################
+
+# Prompt customization
+export POWERLEVEL9K_DIR_HOME_FOREGROUND='white'
+export POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND='white'
+export POWERLEVEL9K_DIR_ETC_FOREGROUND='white'
+export POWERLEVEL9K_DIR_DEFAULT_FOREGROUND='white'
+
+################################################################################
+# Echo utilities
+################################################################################
+
+color_black='\033[0;30m'
+color_red='\033[0;31m'
+color_green='\033[0;32m'
+color_yellow='\033[0;33m'
+color_blue='\033[0;34m'
+color_purple='\033[0;35m'
+color_cyan='\033[0;36m'
+color_gray='\033[0;37m'
+color_none='\033[0m'
+
+echo_red() {
+  echo -e "${color_red}${1:-}${color_none}"
+}
+
+echo_green() {
+  echo -e "${color_green}${1:-}${color_none}"
+}
+
+echo_yellow() {
+  echo -e "${color_yellow}${1:-}${color_none}"
+}
+
+echo_blue() {
+  echo -e "${color_blue}${1:-}${color_none}"
+}
+
+echo_purple() {
+  echo -e "${color_purple}${1:-}${color_none}"
+}
+
+echo_cyan() {
+  echo -e "${color_cyan}${1:-}${color_none}"
+}
+
+banner() {
+  local msg="$1"
+  echo_blue "--------------------------------------------------------------------------------"
+  echo_cyan "${msg}"
+  echo_blue "--------------------------------------------------------------------------------"
+}
+
+run_command() {
+  local cmd="$1"
+  echo_yellow "$cmd"
+  eval "$cmd"
+}
+
+confirm_ok() {
+  local msg="${1:-}"
+
+  if [[ "$msg" != "" ]]; then
+    echo
+    echo "$msg"
+  fi
+
+  echo
+  read -p "Is this ok? (y|n) " -n 1 -r choice
+  case "$choice" in
+    y|Y)
+      echo
+      ;;
+    *)
+      echo
+      exit_error "Aborting"
+      ;;
+  esac
+}
+
+################################################################################
+# PATH utilities
+################################################################################
+
+removePathDir() {
+  dir="$1"
+  export PATH=$(echo "$PATH" | tr ":" "\n" | grep -vx "$dir" | paste -s -d ':' -)
+}
+
+prependPathDir() {
+  dir="$1"
+  if ! $(echo "$PATH" | tr ":" "\n" | grep -qx "$dir" ); then export PATH="${dir}:${PATH}"; fi
+}
+
+appendPathDir() {
+  dir="$1"
+  if ! $(echo "$PATH" | tr ":" "\n" | grep -qx "$dir" ); then export PATH="${PATH}:${dir}"; fi
+}
+
+sourceIfExists() {
+  local file_path="${1:-}"
+  if [[ -f "$file_path" ]]; then
+    source "$file_path"
+  else
+    echo "Warning: not sourcing '$file_path' - does not exist"
+  fi
+}
+
+################################################################################
+# Common environment variables
+################################################################################
+
+# Editors
+export VIM_COMMAND='nvim'
+export GVIM_COMMAND='nvim-qt'
+export GVIMF_COMMAND='$GVIM_COMMAND --nofork'
+export EDITOR="${GVIMF_COMMAND}"
+export GIT_EDITOR="${GVIMF_COMMAND}"
+
+# Pagers
+#export PAGER="less -fiMQ"
+
+# Directories
+export DESKTOP="${HOME}/Desktop"
+export DEV="${HOME}/dev"
+export DOWNLOADS="${HOME}/Downloads"
+export MYTEMP="${HOME}/tmp"
+
+################################################################################
+# Autocorrect
+################################################################################
+
+unsetopt correct_all
+setopt correct
+
+################################################################################
+# Key Bindings
+################################################################################
+
+# ctrl-p and ctrl-n go up and down in history
+bindkey "^P" up-line-or-history
+bindkey "^N" down-line-or-history
+
+################################################################################
+# Shell-related shortcuts
+################################################################################
+
+# Editor shortcuts
+alias editor="${EDITOR}"
+alias e="${EDITOR}"
+alias vim="${VIM_COMMAND}"
+alias gvim="${GVIM_COMMAND}"
+
+# Environment file shortcuts
+alias ee="${EDITOR} ~/.zshrc.local"
+alias ep="${EDITOR} ~/.zpreztorc"
+alias se="source ~/.zshrc"
+alias eg="${EDITOR} ~/.gitconfig"
+alias ev="${EDITOR} ~/.vimrc"
+
+# $PATH shortcuts
+alias ddown="tr ':' '\n'"
+alias path='echo $PATH | ddown'
+
+# rm shortcuts
+alias rm='rm -i'
+
+# find/grep tools
+alias srch='find . -print | grep'
+alias ff='find . -type f -print'
+alias grep="egrep"
+alias rgrep="ack"
+alias grepfiles='cut -d: -f1 | sort | uniq'
+
+# ps shortcuts
+alias psall='ps -e -o pid,ppid,user,command'
+alias psme='ps -u ${USER} -o pid,ppid,user,command'
+alias psgrep='psall | grep'
+alias psmegrep='psme | grep'
+topp() {
+  local name="${1:-}"
+  pid=$(ps -e | grep "$name" | grep -v grep | awk '{print $1}')
+  echo "Running top for name: '$name', pid: '$pid'"
+  top -pid $pid
+}
+alias pscode="ps -ef | grep -i 'code|nvim' | grep -v XPCServices | grep -v egrep"
+alias killcode="killall haxe; killall 'Code Helper'; killall nvim"
+
+# Pagers
+alias p="$PAGER"
+alias more="$PAGER"
+
+# History
+alias h='history'
+alias hist='history'
+alias hgrep='history | grep'
+alias rmhistory='mv "${HISTFILE}" "${HISTFILE}.bak"'
+
+# Diff tools
+alias dt='diffmerge'
+
+# Vim tools
+alias rmswp="rm ~/.vim/_temp/*.swp"
+alias :q="echo Not in vim"
+
+################################################################################
+# cd shortcuts
+################################################################################
+
+alias up='cd ..'
+alias up2='cd ../../'
+alias up3='cd ../../../'
+alias up4='cd ../../../../'
+alias up5='cd ../../../../../'
+alias up6='cd ../../../../../../'
+alias up7='cd ../../../../../../../'
+alias up8='cd ../../../../../../../../'
+alias home="cd"
+alias back="cd -"
+alias dropbox="cd $DROPBOX"
+alias db="cd $DROPBOX"
+alias desktop="cd $DESKTOP"
+alias dl="cd $DOWNLOADS"
+alias docs="cd ~/Documents"
+alias doc="docs"
+alias temp="cd $MYTEMP"
+alias tmp="cd $MYTEMP"
+alias dev="cd $DEV"
+
+# Repos
+alias aw="cd ~/dev/andywhite37"
+alias prezto="cd ~/.zprezto"
+alias dotmac="aw && cd dotfiles-macosx"
+alias dotnix="aw && cd dotfiles-nixos"
+alias relude="aw && cd relude"
+
+################################################################################
+# ls shortcuts
+################################################################################
+
+alias lf='ls -F'
+alias ll='ls -la'
+alias la='ls -la'
+alias llrt='ls -lart'
+alias llart='ls -lart'
+alias l1='ls -1'
+
+################################################################################
+# Networking Shortcuts
+################################################################################
+
+alias ip="ifconfig | grep inet | grep -v inet6 | grep -v '127.0.0.1' | tail -1 | cut -d' ' -f2"
+
+################################################################################
+# Java
+################################################################################
+
+#export JAVA_HOME=$(/usr/libexec/java_home -v "1.8.0_152")
+export JAVA_TOOL_OPTIONS='-Dfile.encoding=UTF8 -Duser.timezone=UTC'
+export _JAVA_OPTIONS='-Xms64m -Xmx2G -Xss2m'
+export SBT_OPTS="-XX:MaxMetaspaceSize=512m -Xms1024m -Xmx1024m"
+
+################################################################################
+# JetBrains
+################################################################################
+
+alias idea=idea-ultimate
+
+################################################################################
+# Docker
+################################################################################
+
+#alias dstart='docker-machine start default'
+#alias denv='eval $(docker-machine env default)'
+#alias ecrlogin='eval $(aws ecr get-login --region us-east-1)'
+
+################################################################################
+# Home Bay
+################################################################################
+
+# Folders
+export HB_HOME="$HOME/dev/andywhite37/homebay"
+export HB_DATOMIC_HOME="$HOME/.datomic/datomic-pro-0.9.5302"
+export HB_DATOMIC_BIN="$HB_DATOMIC_HOME/bin"
+export HB_DATOMIC_BACKUPS="$HOME/.homebay/Backups"
+
+# Database URIs
+export HB_DATOMIC_LOCAL_URI_BASE="datomic:dev://localhost:4334"
+export HB_DATOMIC_LOCAL_URI="$HB_DATOMIC_LOCAL_URI_BASE/homebay"
+
+export HB_DATOMIC_STAGING_URI_BASE="datomic:ddb://us-east-1/homebay-staging"
+export HB_DATOMIC_STAGING_URI="$HB_DATOMIC_STAGING_URI_BASE/homebay"
+
+export HB_DATOMIC_PROD_URI_BASE="datomic:ddb://us-east-1/homebay-prod"
+export HB_DATOMIC_PROD_URI="$HB_DATOMIC_PROD_URI_BASE/homebay"
+
+# cd shortcuts
+alias hb="cd $HB_HOME"
+alias hbzap="cd $HOME/dev/andywhite37/homebay-zapier"
+alias hbcms="cd $HOME/dev/andywhite37/cms"
+alias mapsearch="aw && cd mapsearch"
+
+# Home Bay server/client
+#appendPathDir "$HB_DATOMIC_HOME/bin"
+alias hb_server="hb && date && ./sbt run"
+alias hb_server_watch="hb && date && ./sbt ~run"
+alias hb_client="hb && date && npm run dev"
+alias hb_idea="hb && idea ."
+
+# Home Bay Datomic
+alias hb_datomic_transactor="hb && date && $HB_DATOMIC_BIN/transactor $HB_HOME/conf/datomic/transactor-dev.properties"
+
+alias hb_datomic_backup_local_to_local_dev_dir="date && $HB_DATOMIC_BIN/datomic backup-db $HB_DATOMIC_LOCAL_URI file://$HB_DATOMIC_BACKUPS/homebay-dev"
+alias hb_datomic_restore_local_from_local_dev_dir="date && $HB_DATOMIC_BIN/datomic -Xmx4g -Xms4g restore-db file://$HB_DATOMIC_BACKUPS/homebay-dev $HB_DATOMIC_LOCAL_URI"
+
+alias hb_datomic_backup_staging_to_local_staging_dir="date && $HB_DATOMIC_BIN/datomic backup-db $HB_DATOMIC_STAGING_URI file://$HB_DATOMIC_BACKUPS/homebay-staging"
+alias hb_datomic_restore_local_from_local_staging_dir="date && $HB_DATOMIC_BIN/datomic -Xmx4g -Xms4g restore-db file://$HB_DATOMIC_BACKUPS/homebay-staging $HB_DATOMIC_LOCAL_URI"
+
+alias hb_datomic_restore_local_from_prod_s3_backup="date && $HB_DATOMIC_BIN/datomic   -Xmx4g -Xms4g restore-db s3://homebay-database-backups/homebay-prod $HB_DATOMIC_LOCAL_URI"
+alias hb_datomic_restore_staging_from_prod_s3_backup="date && $HB_DATOMIC_BIN/datomic -Xmx4g -Xms4g restore-db s3://homebay-database-backups/homebay-prod $HB_DATOMIC_STAGING_URI"
+
+alias hb_datomic_console_local="$HB_DATOMIC_BIN/console -p 8080 local $HB_DATOMIC_LOCAL_URI_BASE"
+alias hb_datomic_console_staging="$HB_DATOMIC_BIN/console -p 8080 staging $HB_DATOMIC_STAGING_URI_BASE"
+alias hb_datomic_console_prod="$HB_DATOMIC_BIN/console -p 8080 prod $HB_DATOMIC_PROD_URI_BASE"
+alias hb_datomic_groovysh="$HB_DATOMIC_BIN/groovysh"
+
+# SQL-Datomic
+#export HB_SQL_DATOMIC_ROOT="${HOME}/dev/untangled-web/sql-datomic"
+
+#alias hb_sql_datomic_root="cd ${HB_SQL_DATOMIC_ROOT}"
+#alias hb_sql_datomic_local="hb_sql_datomic_root && ./bin/repl -u datomic:dev://localhost:4334/homebay"
+#alias hb_sql_datomic_staging="hb_sql_datomic_root && ./bin/repl -u ${HB_DATOMIC_STAGING_URI} --pretend"
+#alias hb_sql_datomic_prod="hb_sql_datomic_root && ./bin/repl -u ${HB_DATOMIC_PROD_URI} --pretend"
+
+# Home Bay ElasticSearch
+#export KIBANA_HOME="/Users/awhite/Downloads/Kibana/kibana-6.2.3-darwin-x86_64"
+#alias hb_elasticsearch="hb && date && elasticsearch"
+#alias hb_kibana_local="cd $KIBANA_HOME && date && bin/kibana"
+
+# Mongo
+#alias hb_mongod="hb && date && mongod --config /usr/local/etc/mongod.conf"
+
