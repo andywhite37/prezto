@@ -307,7 +307,7 @@ alias ip="ifconfig | grep inet | grep -v inet6 | grep -v '127.0.0.1' | tail -1 |
 
 #export JAVA_HOME=$(/usr/libexec/java_home -v "1.8.0_152")
 export JAVA_TOOL_OPTIONS='-Dfile.encoding=UTF8 -Duser.timezone=UTC'
-export _JAVA_OPTIONS='-Xms64m -Xmx2G -Xss2m'
+export _JAVA_OPTIONS='-Xms64m -Xmx4G -Xss2m'
 export SBT_OPTS="-XX:MaxMetaspaceSize=512m -Xms1024m -Xmx4G"
 
 ################################################################################
