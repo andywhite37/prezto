@@ -116,6 +116,9 @@ sourceIfExists() {
 # Common environment variables
 ################################################################################
 
+# Terminal
+export TERM=xterm-256color
+
 # Editors
 export VIM_COMMAND='nvim'
 export GVIM_COMMAND='nvim-qt'
@@ -203,11 +206,15 @@ alias hgrep='history | grep'
 alias rmhistory='mv "${HISTFILE}" "${HISTFILE}.bak"'
 
 # Diff tools
-alias dt='diffmerge'
+#alias dt='diffmerge'
+alias dt='kdiff3'
 
 # Vim tools
 alias rmswp="rm ~/.vim/_temp/*.swp"
 alias :q="echo Not in vim"
+
+# Other
+alias open=xdg-open
 
 ################################################################################
 # cd shortcuts
@@ -239,6 +246,11 @@ alias prezto="cd ~/.zprezto"
 alias dotmac="aw && cd dotfiles-macosx"
 alias dotnix="aw && cd dotfiles-nixos"
 alias relude="aw && cd relude"
+alias relude-fetch="aw && cd relude-fetch"
+alias relude-parse="aw && cd relude-parse"
+alias relude-reason-react="aw && cd relude-reason-react"
+alias relude-url="aw && cd relude-url"
+alias relude-eon="aw && cd relude-eon"
 
 ################################################################################
 # ls shortcuts
@@ -250,6 +262,38 @@ alias la='ls -la'
 alias llrt='ls -lart'
 alias llart='ls -lart'
 alias l1='ls -1'
+
+################################################################################
+# KDE shortcuts
+################################################################################
+
+alias kde_refresh_menus="rm ~/.cache/ksycoca5_* -rf && kbuildsycoca5"
+
+################################################################################
+# NixOS shortcuts
+# These aliases are mainly here to help me remember the commands
+################################################################################
+
+export NIXPKGS_LOCAL="/home/awhite/dev/andywhite37/nixpkgs"
+
+alias nixpkgs="cd $NIXPKGS_LOCAL"
+
+# Edit/view my main nix config file
+alias enix="sudo ${EDITOR} /etc/nixos/configuration.nix"
+alias vnix="sudo ${VIM_COMMAND} /etc/nixos/configuration.nix"
+alias catnix="sudo cat /etc/nixos/configuration.nix"
+alias pnix="sudo ${PAGER} /etc/nixos/configuration.nix"
+
+# Update all subscribed channels, then do a nixos-rebuild switch
+# Note: `nixos-rebuild switch --upgrade` only updates the default nixos channel.
+alias nix_update="sudo nix-channel --update && sudo nixos-rebuild switch"
+
+# Cleanup old generations and garbage collect non-referenced packages in the store.
+# Do this for both root and current user
+alias nix_clean="sudo nix-collect-garbage --delete-older-than 30d && nix-collect-garbage --delete-older-than 30d && sudo nixos-rebuild switch"
+
+# Copy the nix config files to my dotfiles git repo
+alias nix_backup_config="dotnix && \\cp /etc/nixos/* ./nixos"
 
 ################################################################################
 # Networking Shortcuts
@@ -273,6 +317,27 @@ export SBT_OPTS="-XX:MaxMetaspaceSize=512m -Xms1024m -Xmx1024m"
 alias idea=idea-ultimate
 
 ################################################################################
+# Node.js/JavaScript
+################################################################################
+
+appendPathDir "${HOME}/.npm-packages/bin"
+
+################################################################################
+# VSCode
+################################################################################
+
+# Extremely hacky way to fix the reason language server executable installed
+# with the jaredly reason plugin.
+export VSCODE_REASON_PLUGIN_VERSION=1.7.0
+vscode_fix_reason_language_server() {
+  echo "Set interpreter..."
+  patchelf --set-interpreter $(find /nix/store -name 'ld-linux-x86-64.so.2' -print -quit | head -1) ~/.vscode/extensions/jaredly.reason-vscode-${VSCODE_REASON_PLUGIN_VERSION}/bin.native.linux
+  echo "Set rpath..."
+  patchelf --set-rpath $(find /nix/store -print | grep 'glibc-2.27/lib$' | head -1) ~/.vscode/extensions/jaredly.reason-vscode-${VSCODE_REASON_PLUGIN_VERSION}/bin.native.linux
+  echo "Done!"
+}
+
+################################################################################
 # Docker
 ################################################################################
 
@@ -284,9 +349,11 @@ alias idea=idea-ultimate
 # Home Bay
 ################################################################################
 
+sourceIfExists "${HOME}/.aws/env"
+
 # Folders
 export HB_HOME="$HOME/dev/andywhite37/homebay"
-export HB_DATOMIC_HOME="$HOME/.datomic/datomic-pro-0.9.5302"
+export HB_DATOMIC_HOME="$HOME/.datomic/datomic-pro-0.9.5786"
 export HB_DATOMIC_BIN="$HB_DATOMIC_HOME/bin"
 export HB_DATOMIC_BACKUPS="$HOME/.homebay/Backups"
 
@@ -310,10 +377,16 @@ alias mapsearch="aw && cd mapsearch"
 #appendPathDir "$HB_DATOMIC_HOME/bin"
 alias hb_server="hb && date && ./sbt run"
 alias hb_server_watch="hb && date && ./sbt ~run"
-alias hb_client="hb && date && npm run dev"
-alias hb_idea="hb && idea ."
+alias hb_client_dev="hb && nix-shell --run 'date && npm run dev'"
+alias hb_client_install="hb && nix-shell --run 'date && rm -rf node_modules && npm install'"
+alias hb_client_install_dev="hb_client_install && hb_client_dev"
+alias hb_client_ci="hb && nix-shell --run 'date && npm ci'"
+alias hb_client_ci_dev="hb_client_ci && hb_client_dev"
+alias hb_idea="hb && idea &"
+alias hb_code="hb && code ."
 
 # Home Bay Datomic
+alias hb_datomic="$HB_DATOMIC_BIN/datomic"
 alias hb_datomic_transactor="hb && date && $HB_DATOMIC_BIN/transactor $HB_HOME/conf/datomic/transactor-dev.properties"
 
 alias hb_datomic_backup_local_to_local_dev_dir="date && $HB_DATOMIC_BIN/datomic backup-db $HB_DATOMIC_LOCAL_URI file://$HB_DATOMIC_BACKUPS/homebay-dev"
