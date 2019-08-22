@@ -246,11 +246,11 @@ alias prezto="cd ~/.zprezto"
 alias dotmac="aw && cd dotfiles-macosx"
 alias dotnix="aw && cd dotfiles-nixos"
 alias relude="aw && cd relude"
+alias relude-eon="aw && cd relude-eon"
 alias relude-fetch="aw && cd relude-fetch"
 alias relude-parse="aw && cd relude-parse"
 alias relude-reason-react="aw && cd relude-reason-react"
 alias relude-url="aw && cd relude-url"
-alias relude-eon="aw && cd relude-eon"
 
 ################################################################################
 # ls shortcuts
@@ -328,7 +328,7 @@ appendPathDir "${HOME}/.npm-packages/bin"
 
 # Extremely hacky way to fix the reason language server executable installed
 # with the jaredly reason plugin.
-export VSCODE_REASON_PLUGIN_VERSION=1.7.0
+export VSCODE_REASON_PLUGIN_VERSION=1.7.1
 vscode_fix_reason_language_server() {
   echo "Set interpreter..."
   patchelf --set-interpreter $(find /nix/store -name 'ld-linux-x86-64.so.2' -print -quit | head -1) ~/.vscode/extensions/jaredly.reason-vscode-${VSCODE_REASON_PLUGIN_VERSION}/bin.native.linux
