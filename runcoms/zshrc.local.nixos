@@ -242,10 +242,13 @@ alias dev="cd $DEV"
 
 # Repos
 alias aw="cd ~/dev/andywhite37"
+alias blog="aw && cd blog"
+alias gh-pages="aw && cd andywhite37.github.io"
 alias prezto="cd ~/.zprezto"
 alias dotmac="aw && cd dotfiles-macosx"
 alias dotnix="aw && cd dotfiles-nixos"
 alias relude="aw && cd relude"
+alias relude-csv="aw && cd relude-csv"
 alias relude-eon="aw && cd relude-eon"
 alias relude-fetch="aw && cd relude-fetch"
 alias relude-parse="aw && cd relude-parse"
@@ -302,13 +305,16 @@ alias nix_backup_config="dotnix && \\cp /etc/nixos/* ./nixos"
 alias ip="ifconfig | grep inet | grep -v inet6 | grep -v '127.0.0.1' | tail -1 | cut -d' ' -f2"
 
 ################################################################################
-# Java
+# Java/Scala
 ################################################################################
 
 #export JAVA_HOME=$(/usr/libexec/java_home -v "1.8.0_152")
 export JAVA_TOOL_OPTIONS='-Dfile.encoding=UTF8 -Duser.timezone=UTC'
 export _JAVA_OPTIONS='-Xms64m -Xmx4G -Xss2m'
 export SBT_OPTS="-XX:MaxMetaspaceSize=512m -Xms1024m -Xmx4G"
+
+appendPathDir "${HOME}/.bloop"
+alias bloop_server="~/.bloop/bloop server"
 
 ################################################################################
 # JetBrains
@@ -336,6 +342,8 @@ vscode_fix_reason_language_server() {
   patchelf --set-rpath $(find /nix/store -print | grep 'glibc-2.27/lib$' | head -1) ~/.vscode/extensions/jaredly.reason-vscode-${VSCODE_REASON_PLUGIN_VERSION}/bin.native.linux
   echo "Done!"
 }
+
+alias vscode_backup_config="code --list-extensions >! ~/dev/andywhite37/dotfiles-nixos/vscode-extensions.txt"
 
 ################################################################################
 # Docker
