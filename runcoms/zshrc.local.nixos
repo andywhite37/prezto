@@ -293,7 +293,7 @@ alias nix_update="sudo nix-channel --update && sudo nixos-rebuild switch"
 
 # Cleanup old generations and garbage collect non-referenced packages in the store.
 # Do this for both root and current user
-alias nix_clean="sudo nix-collect-garbage --delete-older-than 60d && nix-collect-garbage --delete-older-than 60d && sudo nixos-rebuild switch"
+alias nix_clean="sudo nix-collect-garbage --delete-older-than 90d && nix-collect-garbage --delete-older-than 90d && sudo nixos-rebuild switch"
 
 # Copy the nix config files to my dotfiles git repo
 alias nix_backup_config="dotnix && \\cp /etc/nixos/* ./nixos"
@@ -334,7 +334,7 @@ appendPathDir "${HOME}/.npm-packages/bin"
 
 # Extremely hacky way to fix the reason language server executable installed
 # with the jaredly reason plugin.
-export VSCODE_REASON_PLUGIN_VERSION=1.7.1
+export VSCODE_REASON_PLUGIN_VERSION=1.7.4
 vscode_fix_reason_language_server() {
   echo "Set interpreter..."
   patchelf --set-interpreter $(find /nix/store -name 'ld-linux-x86-64.so.2' -print -quit | head -1) ~/.vscode/extensions/jaredly.reason-vscode-${VSCODE_REASON_PLUGIN_VERSION}/bin.native.linux
