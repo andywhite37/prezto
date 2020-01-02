@@ -334,12 +334,12 @@ appendPathDir "${HOME}/.npm-packages/bin"
 
 # Extremely hacky way to fix the reason language server executable installed
 # with the jaredly reason plugin.
-export VSCODE_REASON_PLUGIN_VERSION=1.7.4
+export VSCODE_REASON_PLUGIN_VERSION=1.7.5
 vscode_fix_reason_language_server() {
   echo "Set interpreter..."
-  patchelf --set-interpreter $(find /nix/store -name 'ld-linux-x86-64.so.2' -print -quit | head -1) ~/.vscode/extensions/jaredly.reason-vscode-${VSCODE_REASON_PLUGIN_VERSION}/bin.native.linux
+  patchelf --set-interpreter "$(find /nix/store -name 'ld-linux-x86-64.so.2' -print -quit | head -1)" ~/.vscode/extensions/jaredly.reason-vscode-${VSCODE_REASON_PLUGIN_VERSION}/bin.native.linux
   echo "Set rpath..."
-  patchelf --set-rpath $(find /nix/store -print | grep 'glibc-2.27/lib$' | head -1) ~/.vscode/extensions/jaredly.reason-vscode-${VSCODE_REASON_PLUGIN_VERSION}/bin.native.linux
+  patchelf --set-rpath "$(find /nix/store -maxdepth 1 -name '*glibc-2.27' -print -quit | head -1)/lib" ~/.vscode/extensions/jaredly.reason-vscode-${VSCODE_REASON_PLUGIN_VERSION}/bin.native.linux
   echo "Done!"
 }
 
