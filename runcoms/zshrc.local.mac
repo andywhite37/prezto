@@ -1,0 +1,359 @@
+################################################################################
+# awhite's .zshrc for NixOS
+################################################################################
+
+################################################################################
+# zsh/prezto config
+################################################################################
+
+# Prompt customization
+export POWERLEVEL9K_DIR_HOME_FOREGROUND='white'
+export POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND='white'
+export POWERLEVEL9K_DIR_ETC_FOREGROUND='white'
+export POWERLEVEL9K_DIR_DEFAULT_FOREGROUND='white'
+
+################################################################################
+# Echo utilities
+################################################################################
+
+color_black='\033[0;30m'
+color_red='\033[0;31m'
+color_green='\033[0;32m'
+color_yellow='\033[0;33m'
+color_blue='\033[0;34m'
+color_purple='\033[0;35m'
+color_cyan='\033[0;36m'
+color_gray='\033[0;37m'
+color_none='\033[0m'
+
+echo_red() {
+  echo -e "${color_red}${1:-}${color_none}"
+}
+
+echo_green() {
+  echo -e "${color_green}${1:-}${color_none}"
+}
+
+echo_yellow() {
+  echo -e "${color_yellow}${1:-}${color_none}"
+}
+
+echo_blue() {
+  echo -e "${color_blue}${1:-}${color_none}"
+}
+
+echo_purple() {
+  echo -e "${color_purple}${1:-}${color_none}"
+}
+
+echo_cyan() {
+  echo -e "${color_cyan}${1:-}${color_none}"
+}
+
+banner() {
+  local msg="$1"
+  echo_blue "--------------------------------------------------------------------------------"
+  echo_cyan "${msg}"
+  echo_blue "--------------------------------------------------------------------------------"
+}
+
+run_command() {
+  local cmd="$1"
+  echo_yellow "$cmd"
+  eval "$cmd"
+}
+
+confirm_ok() {
+  local msg="${1:-}"
+
+  if [[ "$msg" != "" ]]; then
+    echo
+    echo "$msg"
+  fi
+
+  echo
+  read -p "Is this ok? (y|n) " -n 1 -r choice
+  case "$choice" in
+    y|Y)
+      echo
+      ;;
+    *)
+      echo
+      exit_error "Aborting"
+      ;;
+  esac
+}
+
+################################################################################
+# PATH utilities
+################################################################################
+
+removePathDir() {
+  dir="$1"
+  export PATH=$(echo "$PATH" | tr ":" "\n" | grep -vx "$dir" | paste -s -d ':' -)
+}
+
+prependPathDir() {
+  dir="$1"
+  if ! $(echo "$PATH" | tr ":" "\n" | grep -qx "$dir" ); then export PATH="${dir}:${PATH}"; fi
+}
+
+appendPathDir() {
+  dir="$1"
+  if ! $(echo "$PATH" | tr ":" "\n" | grep -qx "$dir" ); then export PATH="${PATH}:${dir}"; fi
+}
+
+sourceIfExists() {
+  local file_path="${1:-}"
+  if [[ -f "$file_path" ]]; then
+    source "$file_path"
+  else
+    echo "Warning: not sourcing '$file_path' - does not exist"
+  fi
+}
+
+################################################################################
+# Common environment variables
+################################################################################
+
+# Terminal
+#export TERM=xterm-256color
+
+# Editors
+export VIM_COMMAND='vim'
+export GVIM_COMMAND='vim -g'
+export GVIMF_COMMAND='$GVIM_COMMAND --nofork'
+export EDITOR="${GVIM_COMMAND}"
+export GIT_EDITOR="${GVIMF_COMMAND}"
+
+# Pagers
+#export PAGER="less -fiMQ"
+
+# Directories
+export DESKTOP="${HOME}/Desktop"
+export DEV="${HOME}/dev"
+export DOWNLOADS="${HOME}/Downloads"
+export MYTEMP="${HOME}/tmp"
+
+################################################################################
+# Autocorrect
+################################################################################
+
+unsetopt correct_all
+setopt correct
+
+################################################################################
+# Key Bindings
+################################################################################
+
+# ctrl-p and ctrl-n go up and down in history
+bindkey "^P" up-line-or-history
+bindkey "^N" down-line-or-history
+
+################################################################################
+# Shell-related shortcuts
+################################################################################
+
+# Editor shortcuts
+alias editor="${EDITOR}"
+alias e="${EDITOR}"
+alias vim="${VIM_COMMAND}"
+alias gvim="${GVIM_COMMAND}"
+
+# Environment file shortcuts
+alias ee="${EDITOR} ~/.zshrc.local"
+alias ep="${EDITOR} ~/.zpreztorc"
+alias se="source ~/.zshrc"
+alias eg="${EDITOR} ~/.gitconfig"
+alias ev="${EDITOR} ~/.vimrc"
+
+# $PATH shortcuts
+alias ddown="tr ':' '\n'"
+alias path='echo $PATH | ddown'
+
+# rm shortcuts
+alias rm='rm -i'
+
+# find/grep tools
+alias srch='find . -print | grep'
+alias ff='find . -type f -print'
+alias grep="egrep"
+alias rgrep="ack"
+alias grepfiles='cut -d: -f1 | sort | uniq'
+
+# ps shortcuts
+alias psall='ps -e -o pid,ppid,user,command'
+alias psme='ps -u ${USER} -o pid,ppid,user,command'
+alias psgrep='psall | grep'
+alias psmegrep='psme | grep'
+topp() {
+  local name="${1:-}"
+  pid=$(ps -e | grep "$name" | grep -v grep | awk '{print $1}')
+  echo "Running top for name: '$name', pid: '$pid'"
+  top -pid $pid
+}
+alias pscode="ps -ef | grep -i 'code|nvim' | grep -v XPCServices | grep -v egrep"
+alias killcode="killall haxe; killall 'Code Helper'; killall nvim"
+
+# Pagers
+alias p="$PAGER"
+alias more="$PAGER"
+
+# History
+alias h='history'
+alias hist='history'
+alias hgrep='history | grep'
+alias rmhistory='mv "${HISTFILE}" "${HISTFILE}.bak"'
+
+# Diff tools
+alias dt='diffmerge'
+#alias dt='kdiff3'
+
+# Vim tools
+alias rmswp="rm ~/.vim/_temp/*.swp"
+alias :q="echo Not in vim"
+
+# Other
+#alias open=xdg-open
+
+################################################################################
+# cd shortcuts
+################################################################################
+
+alias up='cd ..'
+alias up2='cd ../../'
+alias up3='cd ../../../'
+alias up4='cd ../../../../'
+alias up5='cd ../../../../../'
+alias up6='cd ../../../../../../'
+alias up7='cd ../../../../../../../'
+alias up8='cd ../../../../../../../../'
+alias home="cd"
+alias back="cd -"
+alias dropbox="cd $DROPBOX"
+alias db="cd $DROPBOX"
+alias desktop="cd $DESKTOP"
+alias dl="cd $DOWNLOADS"
+alias docs="cd ~/Documents"
+alias doc="docs"
+alias temp="cd $MYTEMP"
+alias tmp="cd $MYTEMP"
+alias dev="cd $DEV"
+
+# Repos
+alias aw="cd ~/dev/andywhite37"
+alias blog="aw && cd blog"
+alias gh-pages="aw && cd andywhite37.github.io"
+alias prezto="cd ~/.zprezto"
+alias dotmac="aw && cd dotfiles-macosx"
+alias dotnix="aw && cd dotfiles-nixos"
+alias relude="aw && cd relude"
+alias relude-csv="aw && cd relude-csv"
+alias relude-eon="aw && cd relude-eon"
+alias relude-fetch="aw && cd relude-fetch"
+alias relude-parse="aw && cd relude-parse"
+alias relude-reason-react="aw && cd relude-reason-react"
+alias relude-url="aw && cd relude-url"
+
+################################################################################
+# ls shortcuts
+################################################################################
+
+alias lf='ls -F'
+alias ll='ls -la'
+alias la='ls -la'
+alias llrt='ls -lart'
+alias llart='ls -lart'
+alias l1='ls -1'
+
+################################################################################
+# NixOS shortcuts
+# These aliases are mainly here to help me remember the commands
+################################################################################
+
+#export NIXPKGS_LOCAL="/home/awhite/dev/andywhite37/nixpkgs"
+
+#alias nixpkgs="cd $NIXPKGS_LOCAL"
+
+# Edit/view my main nix config file
+#alias enix="sudo ${EDITOR} /etc/nixos/configuration.nix"
+#alias vnix="sudo ${VIM_COMMAND} /etc/nixos/configuration.nix"
+#alias catnix="sudo cat /etc/nixos/configuration.nix"
+#alias pnix="sudo ${PAGER} /etc/nixos/configuration.nix"
+
+# Update all subscribed channels, then do a nixos-rebuild switch
+# Note: `nixos-rebuild switch --upgrade` only updates the default nixos channel.
+#alias nix_update="sudo nix-channel --update && sudo nixos-rebuild switch"
+
+# Cleanup old generations and garbage collect non-referenced packages in the store.
+# Do this for both root and current user
+#alias nix_clean="sudo nix-collect-garbage --delete-older-than 90d && nix-collect-garbage --delete-older-than 90d && sudo nixos-rebuild switch"
+
+# Copy the nix config files to my dotfiles git repo
+#alias nix_backup_config="dotnix && \\cp /etc/nixos/* ./nixos"
+
+################################################################################
+# Networking Shortcuts
+################################################################################
+
+alias ip="ifconfig | grep inet | grep -v inet6 | grep -v '127.0.0.1' | tail -1 | cut -d' ' -f2"
+
+################################################################################
+# Java/Scala
+################################################################################
+
+#export JAVA_HOME=$(/usr/libexec/java_home -v "1.8.0_152")
+#export JAVA_TOOL_OPTIONS='-Dfile.encoding=UTF8 -Duser.timezone=UTC'
+#export _JAVA_OPTIONS='-Xms64m -Xmx4G -Xss2m'
+#export SBT_OPTS="-XX:MaxMetaspaceSize=512m -Xms1024m -Xmx4G"
+
+#appendPathDir "${HOME}/.bloop"
+#alias bloop_server="~/.bloop/bloop server"
+
+################################################################################
+# JetBrains
+################################################################################
+
+#alias idea="idea-ultimate"
+
+################################################################################
+# Node.js/JavaScript
+################################################################################
+
+appendPathDir "${HOME}/.npm-packages/bin"
+
+# NVM
+#export NVM_DIR="$HOME/.nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+################################################################################
+# VSCode
+################################################################################
+
+# Extremely hacky way to fix the reason language server executable installed
+# with the jaredly reason plugin.
+#export VSCODE_REASON_PLUGIN_VERSION=1.7.8
+#vscode_fix_reason_language_server() {
+  #echo "Set interpreter..."
+  #patchelf --set-interpreter "$(find /nix/store -name 'ld-linux-x86-64.so.2' -print -quit | head -1)" ~/.vscode/extensions/jaredly.reason-vscode-${VSCODE_REASON_PLUGIN_VERSION}/bin.native.linux
+  #echo "Set rpath..."
+  #patchelf --set-rpath "$(find /nix/store -maxdepth 1 -name '*glibc-2.27' -print -quit | head -1)/lib" ~/.vscode/extensions/jaredly.reason-vscode-${VSCODE_REASON_PLUGIN_VERSION}/bin.native.linux
+  #echo "Done!"
+#}
+
+alias vscode_backup_config="code --list-extensions >! ~/dev/andywhite37/dotfiles-macosx/vscode-extensions.txt"
+
+################################################################################
+# Docker
+################################################################################
+
+#alias dstart='docker-machine start default'
+#alias denv='eval $(docker-machine env default)'
+#alias ecrlogin='eval $(aws ecr get-login --region us-east-1)'
+
+################################################################################
+# SimSpace
+################################################################################
+
+sourceIfExists $HOME/.zshrc.local.simspace
