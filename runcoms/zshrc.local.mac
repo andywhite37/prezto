@@ -157,11 +157,12 @@ bindkey "^N" down-line-or-history
 # Editor shortcuts
 alias editor="${EDITOR}"
 alias e="${EDITOR}"
-alias vim="${VIM_COMMAND}"
+#alias vim="${VIM_COMMAND}"
 alias gvim="${GVIM_COMMAND}"
 
 # Environment file shortcuts
 alias ee="${EDITOR} ~/.zshrc.local"
+alias eess="${EDITOR} ~/.zshrc.local.simspace"
 alias ep="${EDITOR} ~/.zpreztorc"
 alias se="source ~/.zshrc"
 alias eg="${EDITOR} ~/.gitconfig"
@@ -216,6 +217,9 @@ alias :q="echo Not in vim"
 # Other
 #alias open=xdg-open
 
+# fzf - fuzzy-finder keybindings
+sourceIfExists $HOME/.fzf.zsh
+
 ################################################################################
 # cd shortcuts
 ################################################################################
@@ -267,6 +271,12 @@ alias llart='ls -lart'
 alias l1='ls -1'
 
 ################################################################################
+# git shortcuts
+################################################################################
+
+alias rmorig="find . -name '*.orig' -print | xargs /bin/rm"
+
+################################################################################
 # NixOS shortcuts
 # These aliases are mainly here to help me remember the commands
 ################################################################################
@@ -299,6 +309,12 @@ alias l1='ls -1'
 alias ip="ifconfig | grep inet | grep -v inet6 | grep -v '127.0.0.1' | tail -1 | cut -d' ' -f2"
 
 ################################################################################
+# iTerm2
+################################################################################
+
+sourceIfExists "${HOME}/.iterm2_shell_integration.zsh"
+
+################################################################################
 # Java/Scala
 ################################################################################
 
@@ -310,6 +326,11 @@ alias ip="ifconfig | grep inet | grep -v inet6 | grep -v '127.0.0.1' | tail -1 |
 #appendPathDir "${HOME}/.bloop"
 #alias bloop_server="~/.bloop/bloop server"
 
+# SimSpace
+#export JAVA_OPTS="-Xms512m -Xmx768m"
+#export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+#export SBT_OPTS="-Xms512M -Xmx1536M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxMetaspaceSize=512m -Dsbt.override.build.repos=true"
+
 ################################################################################
 # JetBrains
 ################################################################################
@@ -317,15 +338,21 @@ alias ip="ifconfig | grep inet | grep -v inet6 | grep -v '127.0.0.1' | tail -1 |
 #alias idea="idea-ultimate"
 
 ################################################################################
+# Haskell
+################################################################################
+
+appendPathDir "${HOME}/.local/bin"
+
+################################################################################
 # Node.js/JavaScript
 ################################################################################
 
 appendPathDir "${HOME}/.npm-packages/bin"
 
-# NVM
-#export NVM_DIR="$HOME/.nvm"
-#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 ################################################################################
 # VSCode
