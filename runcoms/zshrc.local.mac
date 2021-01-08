@@ -120,9 +120,9 @@ sourceIfExists() {
 #export TERM=xterm-256color
 
 # Editors
-export VIM_COMMAND='vim'
-export GVIM_COMMAND='vim -g'
-export GVIMF_COMMAND='$GVIM_COMMAND --nofork'
+export VIM_COMMAND='nvim'
+export GVIM_COMMAND='nvim'
+export GVIMF_COMMAND='$GVIM_COMMAND'
 export EDITOR="${GVIM_COMMAND}"
 export GIT_EDITOR="${GVIMF_COMMAND}"
 
@@ -166,7 +166,11 @@ alias eess="${EDITOR} ~/.zshrc.local.simspace"
 alias ep="${EDITOR} ~/.zpreztorc"
 alias se="source ~/.zshrc"
 alias eg="${EDITOR} ~/.gitconfig"
-alias ev="${EDITOR} ~/.vimrc"
+#alias ev="${EDITOR} ~/.vimrc"
+alias ev="${EDITOR} ~/.config/nvim/init.vim"
+alias et="${EDITOR} ~/.tmux.conf"
+# Ignore file for ag (silver searcher) and rg (ripgrep)
+alias eig="${EDITOR} ~/.ignore"
 
 # $PATH shortcuts
 alias ddown="tr ':' '\n'"
@@ -201,9 +205,9 @@ alias p="$PAGER"
 alias more="$PAGER"
 
 # History
-alias h='history'
-alias hist='history'
-alias hgrep='history | grep'
+alias h='history 0'
+alias hist='h'
+alias hgrep='h | grep'
 alias rmhistory='mv "${HISTFILE}" "${HISTFILE}.bak"'
 
 # Diff tools
@@ -219,6 +223,10 @@ alias :q="echo Not in vim"
 
 # fzf - fuzzy-finder keybindings
 sourceIfExists $HOME/.fzf.zsh
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+
+# Silver Searcher
+alias ag="ag . --path-to-ignore ~/.ignore"
 
 ################################################################################
 # cd shortcuts
@@ -347,7 +355,7 @@ appendPathDir "${HOME}/.local/bin"
 # Node.js/JavaScript
 ################################################################################
 
-appendPathDir "${HOME}/.npm-packages/bin"
+appendPathDir "${HOME}/.npm-global/bin"
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
