@@ -108,7 +108,7 @@ sourceIfExists() {
   if [[ -f "$file_path" ]]; then
     source "$file_path"
   else
-    echo "Warning: not sourcing '$file_path' - does not exist"
+    #echo "Warning: not sourcing '$file_path' - does not exist"
   fi
 }
 
