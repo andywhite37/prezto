@@ -258,6 +258,7 @@ alias aw="cd ~/dev/andywhite37"
 alias blog="aw && cd blog"
 alias gh-pages="aw && cd andywhite37.github.io"
 alias prezto="cd ~/.zprezto"
+alias zp="cd ~/.zprezto"
 alias dotmac="aw && cd dotfiles-macosx"
 alias dotnix="aw && cd dotfiles-nixos"
 alias relude="aw && cd relude"
@@ -267,6 +268,7 @@ alias relude-fetch="aw && cd relude-fetch"
 alias relude-parse="aw && cd relude-parse"
 alias relude-reason-react="aw && cd relude-reason-react"
 alias relude-url="aw && cd relude-url"
+alias vg="aw && cd vidagraph"
 
 ################################################################################
 # ls shortcuts
@@ -284,6 +286,15 @@ alias l1='ls -1'
 ################################################################################
 
 alias rmorig="find . -name '*.orig' -print | xargs /bin/rm"
+
+################################################################################
+# tmux shortcuts
+################################################################################
+
+# tmuxifier
+appendPathDir "${HOME}/.tmuxifier/bin"
+eval "$(tmuxifier init -)"
+alias tm="cd ~/.tmuxifier"
 
 ################################################################################
 # NixOS shortcuts
@@ -356,12 +367,16 @@ appendPathDir "${HOME}/.local/bin"
 # Node.js/JavaScript
 ################################################################################
 
+# This is used if the global npm prefix is set to ~/.npm-global, but that
+# doesn't work well with nvm, which disallows using a prefix.
 appendPathDir "${HOME}/.npm-global/bin"
 
 # nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+if (( ! ${+NVM_DIR} )); then
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+fi
 
 ################################################################################
 # VSCode
