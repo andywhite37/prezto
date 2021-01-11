@@ -372,11 +372,14 @@ appendPathDir "${HOME}/.local/bin"
 appendPathDir "${HOME}/.npm-global/bin"
 
 # nvm
-if (( ! ${+NVM_DIR} )); then
+#if (( ! ${+NVM_DIR} )); then
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-fi
+#fi
+
+# This is a little dangerous
+#appendPathDir "./node_modules/.bin"
 
 ################################################################################
 # VSCode
