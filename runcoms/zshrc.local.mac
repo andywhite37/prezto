@@ -411,3 +411,9 @@ alias vscode_backup_config="code --list-extensions >! ~/dev/andywhite37/dotfiles
 ################################################################################
 
 sourceIfExists $HOME/.zshrc.local.simspace
+
+################################################################################
+# User bin
+################################################################################
+
+prependPathDir "$HOME/bin"
