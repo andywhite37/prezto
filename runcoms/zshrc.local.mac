@@ -369,13 +369,13 @@ appendPathDir "${HOME}/.local/bin"
 
 # This is used if the global npm prefix is set to ~/.npm-global, but that
 # doesn't work well with nvm, which disallows using a prefix.
-appendPathDir "${HOME}/.npm-global/bin"
+#appendPathDir "${HOME}/.npm-global/bin"
 
 # nvm
 #if (( ! ${+NVM_DIR} )); then
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  #export NVM_DIR="$HOME/.nvm"
+  #[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  #[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 #fi
 
 # This is a little dangerous
@@ -417,3 +417,9 @@ sourceIfExists $HOME/.zshrc.local.simspace
 ################################################################################
 
 prependPathDir "$HOME/bin"
+
+################################################################################
+# asdf version manager
+################################################################################
+
+sourceIfExists "$(brew --prefix asdf)/asdf.sh"
