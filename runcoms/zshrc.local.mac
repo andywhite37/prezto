@@ -260,6 +260,7 @@ alias gh-pages="aw && cd andywhite37.github.io"
 alias prezto="cd ~/.zprezto"
 alias zp="cd ~/.zprezto"
 alias dotmac="aw && cd dotfiles-macosx"
+alias dm=dotmac
 alias dotnix="aw && cd dotfiles-nixos"
 alias relude="aw && cd relude"
 alias relude-csv="aw && cd relude-csv"
