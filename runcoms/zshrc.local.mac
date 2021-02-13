@@ -173,9 +173,9 @@ alias et="${EDITOR} ~/.tmux.conf"
 # Ignore file for ag (silver searcher) and rg (ripgrep)
 alias eig="${EDITOR} ~/.ignore"
 
-alias check_zp="zp && pwd && git fa && git s"
-alias check_tm="tm && pwd && git fa && git s"
-alias check_dm="dm && pwd && git fa && git s"
+alias check_zp="banner 'zprezto' && zp && pwd && git fa && git s"
+alias check_tm="banner 'tmuxifier' && tm && pwd && git fa && git s"
+alias check_dm="banner 'dotmac' && dm && pwd && git fa && git s"
 alias check_env="check_zp && check_tm && check_dm"
 
 # $PATH shortcuts
